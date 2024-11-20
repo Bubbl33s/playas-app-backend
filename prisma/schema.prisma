@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Municipality {
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(100)
+  description String?   @db.VarChar(255)
+  image       String
+  district    String
+  province    String
+  department  String
+  beaches     Beach[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([district])
+}
+
+model Restriction {
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(100)
+  description String?  @db.VarChar(255)
+  restrictions      BeachRestriction[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Beach {
+  id                String   @id @default(cuid())
+  entity            Municipality   @relation(fields: [entityId], references: [id])
+  entityId          String
+  name              String   @db.VarChar(100)
+  description       String   @db.VarChar(255)
+  latitude          Float
+  longitude         Float
+  isHealthy         Boolean  @default(false)
+  tideStatus        String   @db.VarChar(10)
+  hasLifeguards     Boolean  @default(false)
+  lifeguardSchedule String?  @db.VarChar(20)
+  restrictions      BeachRestriction[]
+  photos            BeachPhoto[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([entityId])
+  @@index([name])
+}
+
+model BeachRestriction {
+  id            String      @id @default(cuid())
+  beach         Beach       @relation(fields: [beachId], references: [id])
+  beachId       String
+  restriction   Restriction @relation(fields: [restrictionId], references: [id])
+  restrictionId String
+  notes         String?     @db.VarChar(255)
+  createdAt     DateTime    @default(now())
+}
+
+model BeachPhoto {
+  id         String @id @default(cuid())
+  beach      Beach  @relation(fields: [beachId], references: [id])
+  beachId    String
+  url        String
+  isPrimary  Boolean @default(false)
+  uploadedAt DateTime @default(now())
+}
