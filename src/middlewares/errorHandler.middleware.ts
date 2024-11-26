@@ -5,10 +5,10 @@ export default function errorHandler(
   _req: Request,
   res: Response,
   _next: NextFunction,
-) {
+): void {
   if (err instanceof Error) {
-    return res.status(400).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   } else {
-    return res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
