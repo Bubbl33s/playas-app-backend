@@ -9,8 +9,10 @@ datasource db {
 
 model Municipality {
   id          String   @id @default(cuid())
+  email       String   @unique
+  password    String   @db.VarChar(25)
   name        String   @db.VarChar(100)
-  description String?   @db.VarChar(255)
+  description String?  @db.VarChar(255)
   image       String
   district    String
   province    String
@@ -33,8 +35,8 @@ model Restriction {
 
 model Beach {
   id                String   @id @default(cuid())
-  entity            Municipality   @relation(fields: [entityId], references: [id])
-  entityId          String
+  municipality      Municipality   @relation(fields: [municipalityId], references: [id])
+  municipalityId    String
   name              String   @db.VarChar(100)
   description       String   @db.VarChar(255)
   latitude          Float
@@ -48,7 +50,7 @@ model Beach {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  @@index([entityId])
+  @@index([municipalityId])
   @@index([name])
 }
 
