@@ -3,6 +3,7 @@ import {
   CreateMunicipality,
   UpdateMunicipality,
 } from "../types/municipality.types";
+import { hashPassword } from "../utilities/hashPassword";
 
 export class MunicipalityService {
   static async getMunicipalities() {
@@ -34,8 +35,13 @@ export class MunicipalityService {
       throw new Error("Email already in use");
     }
 
+    const hashedPassword: string = await hashPassword(data.password);
+
     return prisma.municipality.create({
-      data,
+      data: {
+        ...data,
+        password: hashedPassword,
+      },
     });
   }
 
