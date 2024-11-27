@@ -5,11 +5,11 @@ import {
 } from "../types/municipality.types";
 
 export class MunicipalityService {
-  async getMunicipalities() {
+  static async getMunicipalities() {
     return prisma.municipality.findMany();
   }
 
-  async getMunicipalityById(id: string) {
+  static async getMunicipalityById(id: string) {
     return prisma.municipality.findUnique({
       where: {
         id,
@@ -17,7 +17,7 @@ export class MunicipalityService {
     });
   }
 
-  async getMunicipalityByEmail(email: string) {
+  static async getMunicipalityByEmail(email: string) {
     return prisma.municipality.findUnique({
       where: {
         email,
@@ -25,7 +25,7 @@ export class MunicipalityService {
     });
   }
 
-  async createMunicipality(data: CreateMunicipality) {
+  static async createMunicipality(data: CreateMunicipality) {
     const municipalityWithSameEmail = await this.getMunicipalityByEmail(
       data.email,
     );
@@ -39,7 +39,9 @@ export class MunicipalityService {
     });
   }
 
-  async updateMunicipality(id: string, data: UpdateMunicipality) {
+  // TODO: Add image upload
+
+  static async updateMunicipality(id: string, data: UpdateMunicipality) {
     return prisma.municipality.update({
       where: {
         id,
@@ -48,7 +50,7 @@ export class MunicipalityService {
     });
   }
 
-  async deleteMunicipality(id: string) {
+  static async deleteMunicipality(id: string) {
     return prisma.municipality.delete({
       where: {
         id,
