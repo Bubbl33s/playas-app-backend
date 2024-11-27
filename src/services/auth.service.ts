@@ -5,7 +5,7 @@ import { MunicipalityService } from "./municipality.service";
 export class AuthService {
   static secretKey = process.env.JWT_SECRET_KEY as string;
 
-  static async municipaliyLogin(email: string, password: string) {
+  static async municipalityLogin(email: string, password: string) {
     if (!this.secretKey) {
       throw new Error("JWT_SECRET_KEY is not defined");
     }
@@ -27,14 +27,14 @@ export class AuthService {
     }
 
     const token = jwt.sign(
-      { id: municipality.id, roler: "muni" },
+      { id: municipality.id, role: "muni" },
       this.secretKey,
       {
         expiresIn: "2h",
       },
     );
 
-    return token;
+    return { token, municipality };
   }
 
   static async verifyToken(token: string) {
