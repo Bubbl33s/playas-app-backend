@@ -13,7 +13,7 @@ model Municipality {
   password    String   @db.VarChar(25)
   name        String   @db.VarChar(100)
   description String?  @db.VarChar(255)
-  image       String
+  image       String?
   district    String
   province    String
   department  String
