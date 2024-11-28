@@ -1,21 +1,24 @@
-import { Prisma } from "@prisma/client";
 import prisma from "../config/prisma.config";
 import { Beach } from "../types/beach.types";
 
 export class BeachService {
   static async getBeaches() {
-    return prisma.beach.findMany();
+    return prisma.beach.findMany({
+      include: { restrictions: true, photos: true },
+    });
   }
 
   static async getBeach(id: string) {
     return prisma.beach.findUnique({
       where: { id },
+      include: { restrictions: true, photos: true },
     });
   }
 
-  static async getBeachByMunicipality(municipalityId: string) {
+  static async getBeachesByMunicipality(municipalityId: string) {
     return prisma.beach.findMany({
       where: { municipalityId },
+      include: { restrictions: true, photos: true },
     });
   }
 
@@ -29,13 +32,19 @@ export class BeachService {
   }
 
   static async updateBeachRestrictions(
-    beachId: string,
+    id: string,
     restrictions: { id: string; notes?: string }[],
   ) {
+    const beach = await prisma.beach.findUnique({ where: { id } });
+
+    if (!beach) {
+      throw new Error("No se encontró la playa");
+    }
+
     return await prisma.$transaction(async (tx) => {
       // 1. Obtener las restricciones actuales de la playa
       const existingRestrictions = await tx.beachRestriction.findMany({
-        where: { beachId },
+        where: { id },
       });
 
       // 2. Extraer los IDs de las restricciones nuevas y existentes
@@ -67,7 +76,7 @@ export class BeachService {
       if (restrictionsToAdd.length > 0) {
         await tx.beachRestriction.createMany({
           data: restrictionsToAdd.map((r) => ({
-            beachId,
+            beachId: id,
             restrictionId: r.id,
             notes: r.notes || null,
           })),
@@ -82,7 +91,7 @@ export class BeachService {
       for (const restriction of restrictionsToUpdate) {
         await tx.beachRestriction.updateMany({
           where: {
-            beachId,
+            beachId: id,
             restrictionId: restriction.id,
           },
           data: { notes: restriction.notes || null },
@@ -97,6 +106,12 @@ export class BeachService {
   // TODO: Implementar metodo para cargar imagenes de playa
 
   static async updateBeach(id: string, data: Beach) {
+    const beach = await prisma.beach.findUnique({ where: { id } });
+
+    if (!beach) {
+      throw new Error("No se encontró la playa");
+    }
+
     return prisma.beach.update({
       where: { id },
       data,
@@ -104,6 +119,12 @@ export class BeachService {
   }
 
   static async deleteBeach(id: string) {
+    const beach = await prisma.beach.findUnique({ where: { id } });
+
+    if (!beach) {
+      throw new Error("No se encontró la playa");
+    }
+
     return await prisma.$transaction(async (tx) => {
       // Eliminar asociaciones de tablas relacionadas
       await tx.beachRestriction.deleteMany({

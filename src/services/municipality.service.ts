@@ -7,7 +7,7 @@ import { hashPassword } from "../utilities/hashPassword";
 
 export class MunicipalityService {
   static async getMunicipalities() {
-    return prisma.municipality.findMany();
+    return prisma.municipality.findMany({ include: { beaches: true } });
   }
 
   static async getMunicipalityById(id: string) {
@@ -15,6 +15,7 @@ export class MunicipalityService {
       where: {
         id,
       },
+      include: { beaches: true },
     });
   }
 
@@ -48,6 +49,14 @@ export class MunicipalityService {
   // TODO: Add image upload
 
   static async updateMunicipality(id: string, data: UpdateMunicipality) {
+    const municipality = await prisma.municipality.findUnique({
+      where: { id },
+    });
+
+    if (!municipality) {
+      throw new Error("No se encontró la municipalidad");
+    }
+
     return prisma.municipality.update({
       where: {
         id,
@@ -57,6 +66,14 @@ export class MunicipalityService {
   }
 
   static async deleteMunicipality(id: string) {
+    const municipality = await prisma.municipality.findUnique({
+      where: { id },
+    });
+
+    if (!municipality) {
+      throw new Error("No se encontró la municipalidad");
+    }
+
     return prisma.municipality.delete({
       where: {
         id,

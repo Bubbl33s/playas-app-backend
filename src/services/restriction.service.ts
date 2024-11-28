@@ -19,12 +19,24 @@ export class RestrictionService {
   }
 
   static async updateRestriction(id: string, data: Restriction) {
+    const restriction = await prisma.restriction.findUnique({ where: { id } });
+
+    if (!restriction) {
+      throw new Error("No se encontró la restricción");
+    }
+
     return await prisma.restriction.update({
       where: { id },
       data,
     });
   }
   static async deleteRestriction(id: string) {
+    const restriction = await prisma.restriction.findUnique({ where: { id } });
+
+    if (!restriction) {
+      throw new Error("No se encontró la restricción");
+    }
+
     return await prisma.$transaction(async (prisma) => {
       await prisma.beachRestriction.deleteMany({
         where: { restrictionId: id },
