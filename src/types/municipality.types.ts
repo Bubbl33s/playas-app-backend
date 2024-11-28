@@ -1,13 +1,11 @@
 export type UpdateMunicipality = {
-  name?: string;
-  description?: string;
+  name: string;
+  description: string;
 };
 
-export type CreateMunicipality = {
+export type CreateMunicipality = UpdateMunicipality & {
   email: string;
   password: string;
-  name: string;
-  description?: string;
   district: string;
   province: string;
   department: string;
