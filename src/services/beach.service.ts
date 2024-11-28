@@ -1,5 +1,5 @@
 import prisma from "../config/prisma.config";
-import { Beach } from "../types/beach.types";
+import { Beach, AddRestriction } from "../types/beach.types";
 
 export class BeachService {
   static async getBeaches() {
@@ -33,7 +33,7 @@ export class BeachService {
 
   static async updateBeachRestrictions(
     id: string,
-    restrictions: { id: string; notes?: string }[],
+    restrictions: AddRestriction[],
   ) {
     const beach = await prisma.beach.findUnique({ where: { id } });
 
