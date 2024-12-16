@@ -578,7 +578,8 @@ components:
 
         file:
           type: string
-          example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgYFxgYFxgYHSggGBolHRgXITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGhAQGy0lHyUt"
+          format: binary
+          description: Imagen a subir.
 
     municipalityUpdate:
       type: object
@@ -610,7 +611,8 @@ components:
 
         file:
           type: string
-          example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgYFxgYFxgYHSggGBolHRgXITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGhAQGy0lHyUt"
+          format: binary
+          description: Imagen a subir.
 
     beach:
       type: object
@@ -687,7 +689,8 @@ components:
 
         file:
           type: string
-          example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgY"
+          format: binary
+          description: Imagen a subir.
 
         restrictions:
           type: array

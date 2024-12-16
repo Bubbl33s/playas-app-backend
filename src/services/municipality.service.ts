@@ -52,7 +52,7 @@ export class MunicipalityService {
     });
 
     if (fileBuffer) {
-      await this.uploadMunicipalityImage(newMunicipality.id, fileBuffer);
+      return await this.uploadMunicipalityImage(newMunicipality.id, fileBuffer);
     }
 
     return newMunicipality;
@@ -79,7 +79,10 @@ export class MunicipalityService {
     });
 
     if (fileBuffer) {
-      await this.uploadMunicipalityImage(updatedMunicipality.id, fileBuffer);
+      return await this.uploadMunicipalityImage(
+        updatedMunicipality.id,
+        fileBuffer,
+      );
     }
 
     return updatedMunicipality;

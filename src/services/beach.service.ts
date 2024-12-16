@@ -29,6 +29,7 @@ export class BeachService {
     municipalityId: string,
     data: Beach,
     restrictions: Restriction[],
+    fileBuffer?: Express.Multer.File["buffer"],
   ) {
     return prisma.$transaction(async (tx) => {
       const newBeach = await tx.beach.create({
@@ -47,8 +48,8 @@ export class BeachService {
         });
       }
 
-      if (data.fileBuffer) {
-        await this.uploadBeachImage(newBeach.id, data.fileBuffer);
+      if (fileBuffer) {
+        return await this.uploadBeachImage(newBeach.id, fileBuffer);
       }
 
       return newBeach;
@@ -59,6 +60,7 @@ export class BeachService {
     id: string,
     data: Beach,
     restrictions: Restriction[],
+    fileBuffer?: Express.Multer.File["buffer"],
   ) {
     return prisma.$transaction(async (tx) => {
       const beach = await tx.beach.findUnique({ where: { id } });
@@ -82,8 +84,8 @@ export class BeachService {
         });
       }
 
-      if (data.fileBuffer) {
-        await this.uploadBeachImage(updatedBeach.id, data.fileBuffer);
+      if (fileBuffer) {
+        return await this.uploadBeachImage(updatedBeach.id, fileBuffer);
       }
 
       return updatedBeach;

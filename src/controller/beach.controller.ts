@@ -56,6 +56,7 @@ export class BeachController {
         req.params.municipalityId,
         req.body,
         req.body.restrictions,
+        req.file?.buffer,
       );
 
       res.json(beach);
@@ -71,6 +72,7 @@ export class BeachController {
         beachId,
         req.body,
         req.body.restrictions,
+        req.file?.buffer,
       );
 
       res.json(updatedBeach);
