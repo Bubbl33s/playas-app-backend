@@ -5,11 +5,7 @@ import {
   authorizeRoles,
   validateData,
 } from "../middlewares";
-import {
-  createBeachValidation,
-  updateBeachValidation,
-  updateBeachRestrictionsValidation,
-} from "../validations";
+import { createBeachValidation, updateBeachValidation } from "../validations";
 
 const router = Router();
 
@@ -33,13 +29,7 @@ router.put(
   validateData(updateBeachValidation),
   BeachController.updateBeach,
 );
-router.put(
-  "/:id/restrictions",
-  authenticateToken,
-  authorizeRoles(["admin", "municipality"]),
-  validateData(updateBeachRestrictionsValidation),
-  BeachController.updateBeachRestrictions,
-);
+
 router.delete(
   "/:id",
   authenticateToken,

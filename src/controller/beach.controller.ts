@@ -55,6 +55,7 @@ export class BeachController {
       const beach = await BeachService.createBeach(
         req.params.municipalityId,
         req.body,
+        req.body.restrictions,
       );
 
       res.json(beach);
@@ -63,17 +64,13 @@ export class BeachController {
     }
   }
 
-  static async updateBeachRestrictions(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
+  static async updateBeach(req: Request, res: Response, next: NextFunction) {
     try {
       const beachId = req.params.id;
-      const restrictions = req.body;
-      const updatedBeach = await BeachService.updateBeachRestrictions(
+      const updatedBeach = await BeachService.updateBeach(
         beachId,
-        restrictions,
+        req.body,
+        req.body.restrictions,
       );
 
       res.json(updatedBeach);
@@ -82,12 +79,27 @@ export class BeachController {
     }
   }
 
-  static async updateBeach(req: Request, res: Response, next: NextFunction) {
+  static async activateBeach(req: Request, res: Response, next: NextFunction) {
     try {
       const beachId = req.params.id;
-      const updatedBeach = await BeachService.updateBeach(beachId, req.body);
+      const beach = await BeachService.activateBeach(beachId);
 
-      res.json(updatedBeach);
+      res.json(beach);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deactivateBeach(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const beachId = req.params.id;
+      const beach = await BeachService.deactivateBeach(beachId);
+
+      res.json(beach);
     } catch (error) {
       next(error);
     }

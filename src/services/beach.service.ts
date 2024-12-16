@@ -23,56 +23,62 @@ export class BeachService {
     });
   }
 
-  static async createBeach(municipalityId: string, data: Beach) {
-    return prisma.beach.create({
-      data: {
-        ...data,
-        municipalityId,
-      },
-    });
-  }
-
-  static async updateBeachRestrictions(
-    id: string,
+  static async createBeach(
+    municipalityId: string,
+    data: Beach,
     restrictions: Restriction[],
   ) {
-    const beach = await prisma.beach.findUnique({ where: { id } });
-
-    if (!beach) {
-      throw new Error("No se encontró la playa");
-    }
-
-    return await prisma.$transaction(async (tx) => {
-      // Eliminar restricciones actuales
-      await tx.restriction.deleteMany({
-        where: { beachId: id },
+    return prisma.$transaction(async (tx) => {
+      const newBeach = await tx.beach.create({
+        data: {
+          ...data,
+          municipalityId,
+        },
       });
 
-      // Crear restricciones nuevas
-      await tx.restriction.createMany({
-        data: restrictions.map((restriction) => ({
-          ...restriction,
-          beachId: id,
-        })),
-      });
+      if (restrictions?.length) {
+        await tx.restriction.createMany({
+          data: restrictions.map((restriction) => ({
+            ...restriction,
+            beachId: newBeach.id,
+          })),
+        });
+      }
 
-      // Finalizar transacción
-      return { message: "Restricciones actualizadas correctamente" };
+      return newBeach;
     });
   }
 
   // TODO: Implementar metodo para cargar imagenes de playa
 
-  static async updateBeach(id: string, data: Beach) {
-    const beach = await prisma.beach.findUnique({ where: { id } });
+  static async updateBeach(
+    id: string,
+    data: Beach,
+    restrictions: Restriction[],
+  ) {
+    return prisma.$transaction(async (tx) => {
+      const beach = await tx.beach.findUnique({ where: { id } });
 
-    if (!beach) {
-      throw new Error("No se encontró la playa");
-    }
+      if (!beach) {
+        throw new Error("No se encontró la playa");
+      }
 
-    return prisma.beach.update({
-      where: { id },
-      data,
+      const updatedBeach = await tx.beach.update({
+        where: { id },
+        data,
+      });
+
+      if (restrictions?.length) {
+        await tx.restriction.deleteMany({ where: { beachId: id } });
+        await tx.restriction.createMany({
+          data: restrictions.map((restriction) => ({
+            ...restriction,
+            beachId: id,
+          })),
+        });
+      }
+
+      return updatedBeach;
     });
   }
 

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { restrictionValidation } from "./restriction.validation";
 
 export const createBeachValidation = z.object({
   name: z
@@ -54,7 +55,36 @@ export const createBeachValidation = z.object({
     .string({
       invalid_type_error: "El horario de salvavidas debe ser de tipo string",
     })
+    .max(50, "El horario de salvavidas debe tener como máximo 50 caracteres")
     .optional(),
+
+  hasRestrooms: z
+    .boolean({
+      invalid_type_error: "La presencia de baños debe ser de tipo boolean",
+    })
+    .default(false),
+
+  restroomSchedule: z
+    .string({
+      invalid_type_error: "El horario de baños debe ser de tipo string",
+    })
+    .max(50, "El horario de baños debe tener como máximo 50 caracteres")
+    .optional(),
+
+  hasShowers: z
+    .boolean({
+      invalid_type_error: "La presencia de duchas debe ser de tipo boolean",
+    })
+    .default(false),
+
+  showerSchedule: z
+    .string({
+      invalid_type_error: "El horario de duchas debe ser de tipo string",
+    })
+    .max(50, "El horario de duchas debe tener como máximo 50 caracteres")
+    .optional(),
+
+  restrictions: z.array(restrictionValidation).optional(),
 });
 
 export const updateBeachValidation = z.object({
@@ -106,30 +136,40 @@ export const updateBeachValidation = z.object({
     .boolean({
       invalid_type_error: "La presencia de salvavidas debe ser de tipo boolean",
     })
-    .optional(),
+    .default(false),
 
   lifeguardSchedule: z
     .string({
       invalid_type_error: "El horario de salvavidas debe ser de tipo string",
     })
+    .max(50, "El horario de salvavidas debe tener como máximo 50 caracteres")
     .optional(),
-});
 
-export const updateBeachRestrictionsValidation = z.object({
-  restrictions: z
-    .array(
-      z.object({
-        id: z.string({
-          required_error: "El ID de la restricción es requerido",
-          invalid_type_error: "El ID de la restricción debe ser de tipo string",
-        }),
-        notes: z
-          .string({
-            invalid_type_error:
-              "Las notas de la restricción deben ser de tipo string",
-          })
-          .optional(),
-      }),
-    )
+  hasRestrooms: z
+    .boolean({
+      invalid_type_error: "La presencia de baños debe ser de tipo boolean",
+    })
+    .default(false),
+
+  restroomSchedule: z
+    .string({
+      invalid_type_error: "El horario de baños debe ser de tipo string",
+    })
+    .max(50, "El horario de baños debe tener como máximo 50 caracteres")
     .optional(),
+
+  hasShowers: z
+    .boolean({
+      invalid_type_error: "La presencia de duchas debe ser de tipo boolean",
+    })
+    .default(false),
+
+  showerSchedule: z
+    .string({
+      invalid_type_error: "El horario de duchas debe ser de tipo string",
+    })
+    .max(50, "El horario de duchas debe tener como máximo 50 caracteres")
+    .optional(),
+
+  restrictions: z.array(restrictionValidation).optional(),
 });
