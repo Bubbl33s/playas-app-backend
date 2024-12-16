@@ -6,7 +6,7 @@ export const updateMunicipalityValidation = z.object({
       invalid_type_error: "El nombre debe ser de tipo string",
     })
     .min(3, "El nombre debe tener al menos 3 caracteres")
-    .max(255, "El nombre debe tener como máximo 100 caracteres")
+    .max(100, "El nombre debe tener como máximo 100 caracteres")
     .optional(),
 
   description: z
@@ -14,7 +14,20 @@ export const updateMunicipalityValidation = z.object({
       invalid_type_error: "La descripción debe ser de tipo string",
     })
     .min(3, "La descripción debe tener al menos 3 caracteres")
-    .max(255, "La descripción debe tener como máximo 255 caracteres")
+    .optional(),
+
+  phrase: z
+    .string({
+      invalid_type_error: "La frase debe ser de tipo string",
+    })
+    .min(3, "La frase debe tener al menos 3 caracteres")
+    .max(50, "La frase debe tener como máximo 255 caracteres")
+    .optional(),
+
+  image: z
+    .string({
+      invalid_type_error: "La imagen debe ser de tipo string",
+    })
     .optional(),
 });
 
@@ -48,20 +61,22 @@ export const createMunicipalityValidation = z.object({
       invalid_type_error: "El nombre debe ser de tipo string",
     })
     .min(3, "El nombre debe tener al menos 3 caracteres")
-    .max(255, "El nombre debe tener como máximo 100 caracteres"),
+    .max(100, "El nombre debe tener como máximo 100 caracteres"),
 
   description: z
     .string({
       invalid_type_error: "La descripción debe ser de tipo string",
     })
     .min(3, "La descripción debe tener al menos 3 caracteres")
-    .max(255, "La descripción debe tener como máximo 255 caracteres")
     .optional(),
 
-  district: z.string({
-    required_error: "El distrito es requerido",
-    invalid_type_error: "El distrito debe ser de tipo string",
-  }),
+  phrase: z
+    .string({
+      invalid_type_error: "La frase debe ser de tipo string",
+    })
+    .min(3, "La frase debe tener al menos 3 caracteres")
+    .max(50, "La frase debe tener como máximo 255 caracteres")
+    .optional(),
 
   province: z.string({
     required_error: "La provincia es requerida",
@@ -72,4 +87,10 @@ export const createMunicipalityValidation = z.object({
     required_error: "El departamento es requerido",
     invalid_type_error: "El departamento debe ser de tipo string",
   }),
+
+  image: z
+    .string({
+      invalid_type_error: "La imagen debe ser de tipo string",
+    })
+    .optional(),
 });

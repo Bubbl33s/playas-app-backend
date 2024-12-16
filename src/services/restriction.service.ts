@@ -12,9 +12,12 @@ export class RestrictionService {
     });
   }
 
-  static async createRestriction(data: Restriction) {
+  static async createRestriction(beachId: string, data: Restriction) {
     return await prisma.restriction.create({
-      data,
+      data: {
+        ...data,
+        beachId: beachId,
+      },
     });
   }
 
@@ -28,23 +31,6 @@ export class RestrictionService {
     return await prisma.restriction.update({
       where: { id },
       data,
-    });
-  }
-  static async deleteRestriction(id: string) {
-    const restriction = await prisma.restriction.findUnique({ where: { id } });
-
-    if (!restriction) {
-      throw new Error("No se encontró la restricción");
-    }
-
-    return await prisma.$transaction(async (prisma) => {
-      await prisma.beachRestriction.deleteMany({
-        where: { restrictionId: id },
-      });
-
-      return await prisma.restriction.delete({
-        where: { id },
-      });
     });
   }
 }
