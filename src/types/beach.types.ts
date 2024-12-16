@@ -8,13 +8,3 @@ export type Beach = {
   hasLifeguards: boolean;
   lifeguardSchedule?: string;
 };
-
-export type BeachRestriction = {
-  id: string;
-  notes?: string;
-};
-
-export type AddRestriction = {
-  id: string;
-  notes?: string;
-};
