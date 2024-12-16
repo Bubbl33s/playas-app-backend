@@ -16,6 +16,191 @@ tags:
   - name: Beaches
     description: Operaciones con playas
 
+paths:
+  /municipalities:
+    get:
+      tags:
+        - Municipalities
+      summary: Listar municipalidades
+      description: Obtiene una lista de todas las municipalidades registradas en la base de datos
+      responses:
+        "200":
+          description: Lista de municipalidades
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/municipality"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Municipalities
+      summary: Crear municipalidad
+      description: Crea una nueva municipalidad en la base de datos
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          $ref: "#/components/requestBodies/municipalityCreate"
+      responses:
+        "201":
+          description: Municipalidad creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/municipality"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /municipalities/login:
+    post:
+      tags:
+        - Municipalities
+      summary: Iniciar sesión
+      description: Inicia sesión en la aplicación
+      requestBody:
+        required: true
+        content:
+          $ref: "#/components/requestBodies/municipalityLogin"
+      responses:
+        "200":
+          description: Sesión iniciada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/userLogin"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /municipalities/{id}:
+    get:
+      tags:
+        - Municipalities
+      summary: Obtener municipalidad
+      description: Obtiene una municipalidad por su ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la municipalidad
+          schema:
+            type: string
+            format: cuid
+      responses:
+        "200":
+          description: Municipalidad encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/municipality"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Municipalities
+      summary: Actualizar municipalidad
+      description: Actualiza una municipalidad por su ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la municipalidad
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          $ref: "#/components/requestBodies/municipalityUpdate"
+      responses:
+        "200":
+          description: Municipalidad encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/municipality"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Municipalities
+      summary: Eliminar municipalidad
+      description: Elimina una municipalidad por su ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la municipalidad
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Municipalidad eliminada
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /municipalities/email/{email}:
+    get:
+      tags:
+        - Municipalities
+      summary: Verificar correo electrónico
+      description: Verifica si un correo electrónico ya está registrado
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: Correo electrónico a verificar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Correo electrónico verificado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isEmailRegistered:
+                    type: boolean
+                    example: false
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   securitySchemes:
     bearerAuth:
@@ -204,6 +389,86 @@ components:
               file:
                 type: string
                 example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgYFxgYFxgYHSggGBolHRgXITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGhAQGy0lHyUt"
+
+    beach:
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - name
+              - description
+              - latitude
+              - longitude
+              - isHealthy
+              - tideStatus
+              - hasLifeguards
+              - hasRestrooms
+              - hasShowers
+            properties:
+              name:
+                type: string
+                example: "Playa Redondo"
+                description: Nombre de la playa
+
+              description:
+                type: string
+                example: "Playa de arena blanca"
+                description: Descripción de la playa
+
+              latitude:
+                type: number
+                example: -12.04318
+                description: Latitud de la playa
+
+              longitude:
+                type: number
+                example: -77.02824
+                description: Longitud de la playa
+
+              isHealthy:
+                type: boolean
+                example: true
+                description: ¿La playa es saludable?
+
+              tideStatus:
+                type: string
+                example: "Alta"
+                description: Estado de la marea
+
+              hasLifeguards:
+                type: boolean
+                example: true
+                description: ¿La playa cuenta con salvavidas?
+
+              lifeguardSchedule:
+                type: string
+                example: "08:00 - 18:00"
+                description: Horario de los salvavidas
+
+              hasRestrooms:
+                type: boolean
+                example: true
+                description: ¿La playa cuenta con baños?
+
+              restroomSchedule:
+                type: string
+                example: "08:00 - 18:00"
+                description: Horario de los baños
+
+              hasShowers:
+                type: boolean
+                example: true
+                description: ¿La playa cuenta con duchas?
+
+              showerSchedule:
+                type: string
+                example: "08:00 - 18:00"
+                description: Horario de las duchas
+
+              file:
+                type: string
+                example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgY"
 
   schemas:
     municipality:
