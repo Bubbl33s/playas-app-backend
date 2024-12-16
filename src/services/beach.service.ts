@@ -1,6 +1,8 @@
+import cloudinary from "../config/cloudinary.config";
 import prisma from "../config/prisma.config";
 import { Beach } from "../types/beach.types";
 import { Restriction } from "../types/restriction.types";
+import { extractPublicId } from "../utilities/extractPublicId";
 
 export class BeachService {
   static async getBeaches() {
@@ -45,11 +47,13 @@ export class BeachService {
         });
       }
 
+      if (data.fileBuffer) {
+        await this.uploadBeachImage(newBeach.id, data.fileBuffer);
+      }
+
       return newBeach;
     });
   }
-
-  // TODO: Implementar metodo para cargar imagenes de playa
 
   static async updateBeach(
     id: string,
@@ -78,7 +82,48 @@ export class BeachService {
         });
       }
 
+      if (data.fileBuffer) {
+        await this.uploadBeachImage(updatedBeach.id, data.fileBuffer);
+      }
+
       return updatedBeach;
+    });
+  }
+
+  static async uploadBeachImage(id: string, fileBuffer: Buffer) {
+    const beach = await prisma.beach.findUnique({
+      where: { id },
+    });
+
+    if (!beach) {
+      throw new Error("No se encontró la playa");
+    }
+
+    if (beach.image) {
+      const publicId = extractPublicId(beach.image);
+      await cloudinary.uploader.destroy(publicId);
+    }
+
+    const uploadStream = cloudinary.uploader.upload_stream;
+
+    const result: any = await new Promise((resolve, reject) => {
+      const stream = uploadStream(
+        { folder: `playas_app/beaches/${beach.municipalityId}` },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        },
+      );
+      stream.end(fileBuffer);
+    });
+
+    return prisma.beach.update({
+      where: {
+        id,
+      },
+      data: {
+        image: result.secure_url,
+      },
     });
   }
 
@@ -120,6 +165,11 @@ export class BeachService {
       await tx.restriction.deleteMany({
         where: { beachId: id },
       });
+
+      if (beach.image) {
+        const publicId = extractPublicId(beach.image);
+        await cloudinary.uploader.destroy(publicId);
+      }
 
       // Eliminar la playa
       return await tx.beach.delete({

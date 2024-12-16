@@ -4,6 +4,7 @@ import {
   authenticateToken,
   authorizeRoles,
   validateData,
+  upload,
 } from "../middlewares";
 import { createBeachValidation, updateBeachValidation } from "../validations";
 
@@ -20,6 +21,7 @@ router.post(
   authenticateToken,
   authorizeRoles(["admin", "municipality"]),
   validateData(createBeachValidation),
+  upload.single("image"),
   BeachController.createBeach,
 );
 router.put(
@@ -27,7 +29,22 @@ router.put(
   authenticateToken,
   authorizeRoles(["admin", "municipality"]),
   validateData(updateBeachValidation),
+  upload.single("image"),
   BeachController.updateBeach,
+);
+
+router.patch(
+  "/:id",
+  authenticateToken,
+  authorizeRoles(["admin", "municipality"]),
+  BeachController.activateBeach,
+);
+
+router.patch(
+  "/:id",
+  authenticateToken,
+  authorizeRoles(["admin", "municipality"]),
+  BeachController.deactivateBeach,
 );
 
 router.delete(

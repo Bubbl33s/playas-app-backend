@@ -5,6 +5,7 @@ import {
   authenticateToken,
   authorizeRoles,
   validateData,
+  upload,
 } from "../middlewares";
 import {
   createMunicipalityValidation,
@@ -21,6 +22,7 @@ router.post(
   authenticateToken,
   authorizeRoles(["admin"]),
   validateData(createMunicipalityValidation),
+  upload.single("file"),
   MunicipalityController.createMunicipality,
 );
 router.put(
@@ -28,6 +30,7 @@ router.put(
   authenticateToken,
   authorizeRoles(["admin", "municipality"]),
   validateData(updateMunicipalityValidation),
+  upload.single("file"),
   MunicipalityController.updateMunicipality,
 );
 router.delete(
