@@ -43,14 +43,15 @@ paths:
       security:
         - bearerAuth: []
       requestBody:
-        required: true
         content:
-          $ref: "#/components/requestBodies/municipalityCreate"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/requestBodies/municipalityCreate"
       responses:
         "201":
           description: Municipalidad creada
           content:
-            application/json:
+            multipart/form-data:
               schema:
                 $ref: "#/components/schemas/municipality"
         "400":
@@ -69,9 +70,10 @@ paths:
       summary: Iniciar sesión
       description: Inicia sesión en la aplicación
       requestBody:
-        required: true
         content:
-          $ref: "#/components/requestBodies/municipalityLogin"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/requestBodies/municipalityLogin"
       responses:
         "200":
           description: Sesión iniciada
@@ -126,11 +128,13 @@ paths:
           description: ID de la municipalidad
           schema:
             type: string
-            format: uuid
+            format: cuid
       requestBody:
         required: true
         content:
-          $ref: "#/components/requestBodies/municipalityUpdate"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/requestBodies/municipalityUpdate"
       responses:
         "200":
           description: Municipalidad encontrada
@@ -161,7 +165,7 @@ paths:
           description: ID de la municipalidad
           schema:
             type: string
-            format: uuid
+            format: cuid
       responses:
         "204":
           description: Municipalidad eliminada
@@ -229,12 +233,14 @@ paths:
       requestBody:
         required: true
         content:
-          $ref: "#/components/requestBodies/beach"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/requestBodies/beach"
       responses:
         "201":
           description: Playa creada
           content:
-            application/json:
+            multipart/form-data:
               schema:
                 $ref: "#/components/schemas/beach"
         "400":
@@ -286,16 +292,18 @@ paths:
           description: ID de la playa
           schema:
             type: string
-            format: uuid
+            format: cuid
       requestBody:
         required: true
         content:
-          $ref: "#/components/requestBodies/beach"
+          multipart/form-data:
+            schema:
+              $ref: "#/components/requestBodies/beach"
       responses:
         "200":
           description: Playa encontrada
           content:
-            application/json:
+            multipart/form-data:
               schema:
                 $ref: "#/components/schemas/beach"
         "401":
@@ -321,7 +329,7 @@ paths:
           description: ID de la playa
           schema:
             type: string
-            format: uuid
+            format: cuid
       responses:
         "204":
           description: Playa eliminada
@@ -347,7 +355,7 @@ paths:
           description: ID de la municipalidad
           schema:
             type: string
-            format: uuid
+            format: cuid
       responses:
         "200":
           description: Lista de playas
@@ -361,7 +369,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 
   /beaches/{id}/activate:
-    put:
+    patch:
       tags:
         - Beaches
       summary: Activar playa
@@ -393,7 +401,7 @@ paths:
           $ref: "#/components/responses/InternalServerError"
 
   /beaches/{id}/deactivate:
-    put:
+    patch:
       tags:
         - Beaches
       summary: Desactivar playa
@@ -512,194 +520,193 @@ components:
 
   requestBodies:
     municipalityLogin:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              email:
-                type: string
-                example: "john.doe@example.com"
-                description: Correo electrónico del usuario, debe cumplir con el formato de un correo electrónico válido
+      type: object
+      properties:
+        email:
+          type: string
+          example: "john.doe@example.com"
+          description: Correo electrónico del usuario, debe cumplir con el formato de un correo electrónico válido
 
-              password:
-                type: string
-                example: "Abcd1234_"
-                description: Contraseña del usuario, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
+        password:
+          type: string
+          example: "Abcd1234_"
+          description: Contraseña del usuario, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
 
     municipalityCreate:
-      content:
-        multipart/form-data:
-          schema:
-            type: object
-            required:
-              - email
-              - password
-              - name
-              - province
-              - department
-            properties:
-              email:
-                type: string
-                example: "john.doe@example.com"
-                description: Correo electrónico del usuario, debe cumplir con el formato de un correo electrónico válido
+      type: object
+      required:
+        - email
+        - password
+        - name
+        - province
+        - department
+      properties:
+        email:
+          type: string
+          example: "john.doe@example.com"
+          description: Correo electrónico del usuario, debe cumplir con el formato de un correo electrónico válido
 
-              password:
-                type: string
-                example: "Abcd1234_"
-                description: Contraseña del usuario, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
+        password:
+          type: string
+          example: "Abcd1234_"
+          description: Contraseña del usuario, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
 
-              name:
-                type: string
-                example: "Lima"
-                description: Nombre de la municipalidad
+        name:
+          type: string
+          example: "Lima"
+          description: Nombre de la municipalidad
 
-              province:
-                type: string
-                example: "Lima"
-                description: Provincia de la municipalidad
+        province:
+          type: string
+          example: "Lima"
+          description: Provincia de la municipalidad
 
-              department:
-                type: string
-                example: "Lima"
-                description: Departamento de la municipalidad
+        department:
+          type: string
+          example: "Lima"
+          description: Departamento de la municipalidad
 
-              description:
-                type: string
-                example: "Capital del Perú"
-                description: Descripción de la municipalidad
+        description:
+          type: string
+          example: "Capital del Perú"
+          description: Descripción de la municipalidad
 
-              phrase:
-                type: string
-                example: "Ciudad de los Reyes"
-                description: Frase de la municipalidad
+        phrase:
+          type: string
+          example: "Ciudad de los Reyes"
+          description: Frase de la municipalidad
 
-              file:
-                type: string
-                example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgYFxgYFxgYHSggGBolHRgXITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGhAQGy0lHyUt"
+        file:
+          type: string
+          example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgYFxgYFxgYHSggGBolHRgXITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGhAQGy0lHyUt"
 
     municipalityUpdate:
-      content:
-        multipart/form-data:
-          schema:
-            type: object
-            properties:
-              name:
-                type: string
-                example: "Lima"
-                description: Nombre de la municipalidad
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Lima"
+          description: Nombre de la municipalidad
 
-              province:
-                type: string
-                example: "Lima"
-                description: Provincia de la municipalidad
+        province:
+          type: string
+          example: "Lima"
+          description: Provincia de la municipalidad
 
-              department:
-                type: string
-                example: "Lima"
-                description: Departamento de la municipalidad
+        department:
+          type: string
+          example: "Lima"
+          description: Departamento de la municipalidad
 
-              description:
-                type: string
-                example: "Capital del Perú"
-                description: Descripción de la municipalidad
+        description:
+          type: string
+          example: "Capital del Perú"
+          description: Descripción de la municipalidad
 
-              phrase:
-                type: string
-                example: "Ciudad de los Reyes"
-                description: Frase de la municipalidad
+        phrase:
+          type: string
+          example: "Ciudad de los Reyes"
+          description: Frase de la municipalidad
 
-              file:
-                type: string
-                example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgYFxgYFxgYHSggGBolHRgXITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGhAQGy0lHyUt"
+        file:
+          type: string
+          example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgYFxgYFxgYHSggGBolHRgXITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGhAQGy0lHyUt"
 
     beach:
-      content:
-        multipart/form-data:
-          schema:
+      type: object
+      required:
+        - name
+        - description
+        - latitude
+        - longitude
+        - isHealthy
+        - tideStatus
+        - hasLifeguards
+        - hasRestrooms
+        - hasShowers
+      properties:
+        name:
+          type: string
+          example: "Playa Redondo"
+          description: Nombre de la playa
+
+        description:
+          type: string
+          example: "Playa de arena blanca"
+          description: Descripción de la playa
+
+        latitude:
+          type: number
+          example: -12.04318
+          description: Latitud de la playa
+
+        longitude:
+          type: number
+          example: -77.02824
+          description: Longitud de la playa
+
+        isHealthy:
+          type: boolean
+          example: true
+          description: ¿La playa es saludable?
+
+        tideStatus:
+          type: string
+          example: "Alta"
+          description: Estado de la marea
+
+        hasLifeguards:
+          type: boolean
+          example: true
+          description: ¿La playa cuenta con salvavidas?
+
+        lifeguardSchedule:
+          type: string
+          example: "08:00 - 18:00"
+          description: Horario de los salvavidas
+
+        hasRestrooms:
+          type: boolean
+          example: true
+          description: ¿La playa cuenta con baños?
+
+        restroomSchedule:
+          type: string
+          example: "08:00 - 18:00"
+          description: Horario de los baños
+
+        hasShowers:
+          type: boolean
+          example: true
+          description: ¿La playa cuenta con duchas?
+
+        showerSchedule:
+          type: string
+          example: "08:00 - 18:00"
+          description: Horario de las duchas
+
+        file:
+          type: string
+          example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgY"
+
+        restrictions:
+          type: array
+          items:
             type: object
-            required:
-              - name
-              - description
-              - latitude
-              - longitude
-              - isHealthy
-              - tideStatus
-              - hasLifeguards
-              - hasRestrooms
-              - hasShowers
             properties:
               name:
                 type: string
-                example: "Playa Redondo"
-                description: Nombre de la playa
-
+                example: "Toque de queda"
               description:
                 type: string
-                example: "Playa de arena blanca"
-                description: Descripción de la playa
-
-              latitude:
-                type: number
-                example: -12.04318
-                description: Latitud de la playa
-
-              longitude:
-                type: number
-                example: -77.02824
-                description: Longitud de la playa
-
-              isHealthy:
-                type: boolean
-                example: true
-                description: ¿La playa es saludable?
-
-              tideStatus:
-                type: string
-                example: "Alta"
-                description: Estado de la marea
-
-              hasLifeguards:
-                type: boolean
-                example: true
-                description: ¿La playa cuenta con salvavidas?
-
-              lifeguardSchedule:
-                type: string
-                example: "08:00 - 18:00"
-                description: Horario de los salvavidas
-
-              hasRestrooms:
-                type: boolean
-                example: true
-                description: ¿La playa cuenta con baños?
-
-              restroomSchedule:
-                type: string
-                example: "08:00 - 18:00"
-                description: Horario de los baños
-
-              hasShowers:
-                type: boolean
-                example: true
-                description: ¿La playa cuenta con duchas?
-
-              showerSchedule:
-                type: string
-                example: "08:00 - 18:00"
-                description: Horario de las duchas
-
-              file:
-                type: string
-                example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgY"
-
+                example: "Restricción de circulación de personas en la noche"
   schemas:
     municipality:
       type: object
       properties:
         id:
           type: string
-          format: uuid
+          format: cuid
           example: "f2e0f40f20f20f20f20f20f2"
         email:
           type: string
@@ -741,7 +748,7 @@ components:
       properties:
         id:
           type: string
-          format: uuid
+          format: cuid
           example: "f2e0f40f20f20f20f20f20f2"
         name:
           type: string
@@ -767,7 +774,7 @@ components:
       properties:
         id:
           type: string
-          format: uuid
+          format: cuid
           example: "f2e0f40f20f20f20f20f20f2"
         name:
           type: string
@@ -786,7 +793,7 @@ components:
           example: -77.02824
         municipalityId:
           type: string
-          format: uuid
+          format: cuid
           example: "f2e0f40f20f20f20f20f20f2"
         isHealthy:
           type: boolean
