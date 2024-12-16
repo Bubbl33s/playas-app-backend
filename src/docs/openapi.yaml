@@ -1,0 +1,337 @@
+openapi: 3.0.0
+info:
+  title: Playas App Backend
+  description: "Tecnologías utilizadas: Node.js, TypeScript, Express, PostgreSQL, Prisma, JWT, Swagger, Cloudinary."
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:9090/api
+    description: Servidor de desarrollo
+  # - url: https://signs-lang-pe.up.railway.app/api
+  #   description: Servidor de producción
+
+tags:
+  - name: Municipalities
+    description: Operaciones con usuarios
+  - name: Beaches
+    description: Operaciones con playas
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: 'Token JWT para autenticación. Los usuarios autenticados pueden tener uno de los siguientes roles: "admin", "user".'
+
+  # RESPONSES
+  responses:
+    # GENERAL
+    BadRequest:
+      description: Datos no válidos. La solicitud no se puede procesar debido a errores de cliente.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Datos no válidos. Asegúrate de que todos los campos requeridos estén presentes y sean correctos."
+              validationErrors:
+                type: array
+                items:
+                  type: string
+                example:
+                  [
+                    "El campo 'nombre' es requerido.",
+                    "La dirección de correo electrónico no es válida.",
+                    "Ya existe un usuario con el correo electrónico",
+                  ]
+
+    Unauthorized:
+      description: No autenticado. Se requiere un token válido.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "No autenticado. Se requiere un token válido."
+
+    Forbidden:
+      description: No tienes permisos para acceder a este recurso.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Acceso prohibido. No tienes los permisos necesarios."
+
+    NotFound:
+      description: Recurso no encontrado
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "No se encontró el recurso solicitado"
+
+    InternalServerError:
+      description: Error interno del servidor
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Error interno del servidor"
+
+    # AUTH
+    userLogin:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/user"
+        token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjIwZjQwZjIwZjIwZjIwZjIwZjIwZjIiLCJyb2xlIjoidXNlciIsImlhdCI6MTYzMDIwNjQwMCwiZXhwIjoxNjMwMjA2NDAwfQ.7"
+
+  requestBodies:
+    municipalityLogin:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                example: "john.doe@example.com"
+                description: Correo electrónico del usuario, debe cumplir con el formato de un correo electrónico válido
+
+              password:
+                type: string
+                example: "Abcd1234_"
+                description: Contraseña del usuario, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
+
+    municipalityCreate:
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            required:
+              - email
+              - password
+              - name
+              - province
+              - department
+            properties:
+              email:
+                type: string
+                example: "john.doe@example.com"
+                description: Correo electrónico del usuario, debe cumplir con el formato de un correo electrónico válido
+
+              password:
+                type: string
+                example: "Abcd1234_"
+                description: Contraseña del usuario, debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula, un número y un carácter especial
+
+              name:
+                type: string
+                example: "Lima"
+                description: Nombre de la municipalidad
+
+              province:
+                type: string
+                example: "Lima"
+                description: Provincia de la municipalidad
+
+              department:
+                type: string
+                example: "Lima"
+                description: Departamento de la municipalidad
+
+              description:
+                type: string
+                example: "Capital del Perú"
+                description: Descripción de la municipalidad
+
+              phrase:
+                type: string
+                example: "Ciudad de los Reyes"
+                description: Frase de la municipalidad
+
+              file:
+                type: string
+                example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgYFxgYFxgYHSggGBolHRgXITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGhAQGy0lHyUt"
+
+    municipalityUpdate:
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                example: "Lima"
+                description: Nombre de la municipalidad
+
+              province:
+                type: string
+                example: "Lima"
+                description: Provincia de la municipalidad
+
+              department:
+                type: string
+                example: "Lima"
+                description: Departamento de la municipalidad
+
+              description:
+                type: string
+                example: "Capital del Perú"
+                description: Descripción de la municipalidad
+
+              phrase:
+                type: string
+                example: "Ciudad de los Reyes"
+                description: Frase de la municipalidad
+
+              file:
+                type: string
+                example: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGBgYGBgYGBgYGBgYGBgYFxgYFxgYHSggGBolHRgXITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGhAQGy0lHyUt"
+
+  schemas:
+    municipality:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "f2e0f40f20f20f20f20f20f2"
+        email:
+          type: string
+          example: "john.doe@example.com"
+          description: Correo electrónico de la municipalidad, debe cumplir con el formato de un correo electrónico válido
+        password:
+          type: string
+          example: "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36FjsdY4Z5k6Q5J5Z5J5J5K"
+          description: Contraseña del usuario encriptada
+        name:
+          type: string
+          example: "Lima"
+        phrase:
+          type: string
+          example: "Ciudad de los Reyes"
+        description:
+          type: string
+          example: "Capital del Perú"
+        image:
+          type: string
+          example: "https://res.cloudinary.com/dqfz4zj5e/image/upload/v1630296000/lima.jpg"
+        province:
+          type: string
+          example: "Lima"
+        department:
+          type: string
+          example: "Lima"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2021-08-30T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2021-08-30T00:00:00.000Z"
+
+    restriction:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "f2e0f40f20f20f20f20f20f2"
+        name:
+          type: string
+          example: "Toque de queda"
+        description:
+          type: string
+          example: "Restricción de circulación de personas en la noche"
+        beachId:
+          type: string
+          format: cuid
+          example: "f2e0f40f20f20f20f20f20f2"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2021-08-30T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2021-08-30T00:00:00.000Z"
+
+    beach:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "f2e0f40f20f20f20f20f20f2"
+        name:
+          type: string
+          example: "Playa Redondo"
+        description:
+          type: string
+          example: "Playa de arena blanca"
+        image:
+          type: string
+          example: "https://res.cloudinary.com/dqfz4zj5e/image/upload/v1630296000/redondo.jpg"
+        latitude:
+          type: number
+          example: -12.04318
+        longitude:
+          type: number
+          example: -77.02824
+        municipalityId:
+          type: string
+          format: uuid
+          example: "f2e0f40f20f20f20f20f20f2"
+        isHealthy:
+          type: boolean
+          example: true
+        tideStatus:
+          type: string
+          example: "Alta"
+        hasLifeguards:
+          type: boolean
+          example: true
+        lifeguardSchedule:
+          type: string
+          example: "08:00 - 18:00"
+        hasRestrooms:
+          type: boolean
+          example: true
+        restroomSchedule:
+          type: string
+          example: "08:00 - 18:00"
+        hasShowers:
+          type: boolean
+          example: true
+        showerSchedule:
+          type: string
+          example: "08:00 - 18:00"
+        isActive:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: "2021-08-30T00:00:00.000Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2021-08-30T00:00:00.000Z"
