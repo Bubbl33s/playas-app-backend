@@ -201,6 +201,229 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /beaches:
+    get:
+      tags:
+        - Beaches
+      summary: Listar playas
+      description: Obtiene una lista de todas las playas registradas en la base de datos
+      responses:
+        "200":
+          description: Lista de playas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/beach"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Beaches
+      summary: Crear playa
+      description: Crea una nueva playa en la base de datos
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          $ref: "#/components/requestBodies/beach"
+      responses:
+        "201":
+          description: Playa creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/beach"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /beaches/{id}:
+    get:
+      tags:
+        - Beaches
+      summary: Obtener playa
+      description: Obtiene una playa por su ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la playa
+          schema:
+            type: string
+            format: cuid
+      responses:
+        "200":
+          description: Playa encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/beach"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    put:
+      tags:
+        - Beaches
+      summary: Actualizar playa
+      description: Actualiza una playa por su ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la playa
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          $ref: "#/components/requestBodies/beach"
+      responses:
+        "200":
+          description: Playa encontrada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/beach"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    delete:
+      tags:
+        - Beaches
+      summary: Eliminar playa
+      description: Elimina una playa por su ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la playa
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Playa eliminada
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /beaches/municipality/{municipalityId}:
+    get:
+      tags:
+        - Beaches
+      summary: Listar playas por municipalidad
+      description: Obtiene una lista de todas las playas registradas en la base de datos por una municipalidad
+      parameters:
+        - name: municipalityId
+          in: path
+          required: true
+          description: ID de la municipalidad
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: Lista de playas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/beach"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /beaches/{id}/activate:
+    put:
+      tags:
+        - Beaches
+      summary: Activar playa
+      description: Activa una playa por su ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la playa
+          schema:
+            type: string
+            format: cuid
+      responses:
+        "200":
+          description: Playa activada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/beach"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /beaches/{id}/deactivate:
+    put:
+      tags:
+        - Beaches
+      summary: Desactivar playa
+      description: Desactiva una playa por su ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la playa
+          schema:
+            type: string
+            format: cuid
+      responses:
+        "200":
+          description: Playa desactivada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/beach"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
 components:
   securitySchemes:
     bearerAuth:
