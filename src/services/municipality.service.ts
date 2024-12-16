@@ -30,7 +30,10 @@ export class MunicipalityService {
     });
   }
 
-  static async createMunicipality(data: CreateMunicipality) {
+  static async createMunicipality(
+    data: CreateMunicipality,
+    fileBuffer?: Express.Multer.File["buffer"],
+  ) {
     const municipalityWithSameEmail = await this.getMunicipalityByEmail(
       data.email,
     );
@@ -48,8 +51,8 @@ export class MunicipalityService {
       },
     });
 
-    if (data.fileBuffer) {
-      await this.uploadMunicipalityImage(newMunicipality.id, data.fileBuffer);
+    if (fileBuffer) {
+      await this.uploadMunicipalityImage(newMunicipality.id, fileBuffer);
     }
 
     return newMunicipality;
