@@ -1,12 +1,13 @@
 export type UpdateMunicipality = {
   name: string;
-  description: string;
+  description?: string;
+  phrase?: string;
+  fileBuffer?: Express.Multer.File["buffer"];
 };
 
 export type CreateMunicipality = UpdateMunicipality & {
   email: string;
   password: string;
-  district: string;
   province: string;
   department: string;
 };

@@ -4,6 +4,8 @@ import {
   UpdateMunicipality,
 } from "../types/municipality.types";
 import { hashPassword } from "../utilities/hashPassword";
+import cloudinary from "../config/cloudinary.config";
+import { extractPublicId } from "../utilities/extractPublicId";
 
 export class MunicipalityService {
   static async getMunicipalities() {
@@ -24,6 +26,7 @@ export class MunicipalityService {
       where: {
         email,
       },
+      include: { beaches: true },
     });
   }
 
@@ -38,15 +41,19 @@ export class MunicipalityService {
 
     const hashedPassword: string = await hashPassword(data.password);
 
-    return prisma.municipality.create({
+    const newMunicipality = await prisma.municipality.create({
       data: {
         ...data,
         password: hashedPassword,
       },
     });
-  }
 
-  // TODO: Add image upload
+    if (data.fileBuffer) {
+      await this.uploadMunicipalityImage(newMunicipality.id, data.fileBuffer);
+    }
+
+    return newMunicipality;
+  }
 
   static async updateMunicipality(id: string, data: UpdateMunicipality) {
     const municipality = await prisma.municipality.findUnique({
@@ -57,11 +64,57 @@ export class MunicipalityService {
       throw new Error("No se encontró la municipalidad");
     }
 
-    return prisma.municipality.update({
+    const updatedMunicipality = await prisma.municipality.update({
       where: {
         id,
       },
       data,
+    });
+
+    if (data.fileBuffer) {
+      await this.uploadMunicipalityImage(
+        updatedMunicipality.id,
+        data.fileBuffer,
+      );
+    }
+
+    return updatedMunicipality;
+  }
+
+  static async uploadMunicipalityImage(id: string, fileBuffer: Buffer) {
+    const municipality = await prisma.municipality.findUnique({
+      where: { id },
+    });
+
+    if (!municipality) {
+      throw new Error("No se encontró la municipalidad");
+    }
+
+    if (municipality.image) {
+      const publicId = extractPublicId(municipality.image);
+      await cloudinary.uploader.destroy(publicId);
+    }
+
+    const uploadStream = cloudinary.uploader.upload_stream;
+
+    const result: any = await new Promise((resolve, reject) => {
+      const stream = uploadStream(
+        { folder: `playas_app/municipality/${id}` },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result);
+        },
+      );
+      stream.end(fileBuffer);
+    });
+
+    return prisma.municipality.update({
+      where: {
+        id,
+      },
+      data: {
+        image: result.secure_url,
+      },
     });
   }
 
@@ -72,6 +125,11 @@ export class MunicipalityService {
 
     if (!municipality) {
       throw new Error("No se encontró la municipalidad");
+    }
+
+    if (municipality.image) {
+      const publicId = extractPublicId(municipality.image);
+      await cloudinary.uploader.destroy(publicId);
     }
 
     return prisma.municipality.delete({

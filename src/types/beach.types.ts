@@ -7,4 +7,5 @@ export type Beach = {
   tideStatus: string;
   hasLifeguards: boolean;
   lifeguardSchedule?: string;
+  fileBuffer?: Buffer;
 };

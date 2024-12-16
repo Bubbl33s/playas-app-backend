@@ -10,14 +10,17 @@ import { restrictionValidation } from "../validations";
 const router = Router();
 
 router.get("/", RestrictionController.getRestrictions);
+
 router.get("/:id", RestrictionController.getRestriction);
+
 router.post(
-  "/",
+  "/:beachId",
   authenticateToken,
   authorizeRoles(["admin"]),
   validateData(restrictionValidation),
   RestrictionController.createRestriction,
 );
+
 router.put(
   "/:id",
   authenticateToken,
@@ -25,6 +28,7 @@ router.put(
   validateData(restrictionValidation),
   RestrictionController.updateRestriction,
 );
+
 router.delete(
   "/:id",
   authenticateToken,
