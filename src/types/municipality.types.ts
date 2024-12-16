@@ -2,7 +2,7 @@ export type UpdateMunicipality = {
   name: string;
   description?: string;
   phrase?: string;
-  image?: string;
+  fileBuffer?: Express.Multer.File["buffer"];
 };
 
 export type CreateMunicipality = UpdateMunicipality & {

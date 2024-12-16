@@ -23,12 +23,6 @@ export const updateMunicipalityValidation = z.object({
     .min(3, "La frase debe tener al menos 3 caracteres")
     .max(50, "La frase debe tener como máximo 255 caracteres")
     .optional(),
-
-  image: z
-    .string({
-      invalid_type_error: "La imagen debe ser de tipo string",
-    })
-    .optional(),
 });
 
 export const createMunicipalityValidation = z.object({
@@ -87,10 +81,4 @@ export const createMunicipalityValidation = z.object({
     required_error: "El departamento es requerido",
     invalid_type_error: "El departamento debe ser de tipo string",
   }),
-
-  image: z
-    .string({
-      invalid_type_error: "La imagen debe ser de tipo string",
-    })
-    .optional(),
 });

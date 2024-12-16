@@ -65,9 +65,12 @@ export class MunicipalityController {
     next: NextFunction,
   ) {
     try {
-      const municipality = await MunicipalityService.createMunicipality(
-        req.body,
-      );
+      const fileBuffer = req.file?.buffer;
+
+      const municipality = await MunicipalityService.createMunicipality({
+        ...req.body,
+        fileBuffer,
+      });
 
       res.json(municipality);
     } catch (error) {
@@ -82,10 +85,12 @@ export class MunicipalityController {
   ) {
     try {
       const { id } = req.params;
-      const municipality = await MunicipalityService.updateMunicipality(
-        id,
-        req.body,
-      );
+      const fileBuffer = req.file?.buffer;
+
+      const municipality = await MunicipalityService.updateMunicipality(id, {
+        ...req.body,
+        fileBuffer,
+      });
 
       res.json(municipality);
     } catch (error) {
