@@ -34,14 +34,14 @@ router.put(
 );
 
 router.patch(
-  "/:id",
+  "/:id/activate",
   authenticateToken,
   authorizeRoles(["admin", "municipality"]),
   BeachController.activateBeach,
 );
 
 router.patch(
-  "/:id",
+  "/:id/deactivate",
   authenticateToken,
   authorizeRoles(["admin", "municipality"]),
   BeachController.deactivateBeach,

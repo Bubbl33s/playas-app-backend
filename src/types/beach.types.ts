@@ -7,5 +7,9 @@ export type Beach = {
   tideStatus: string;
   hasLifeguards: boolean;
   lifeguardSchedule?: string;
-  fileBuffer?: Buffer;
+  hasRestrooms: boolean;
+  restroomSchedule?: string;
+  hasShowers: boolean;
+  showerSchedule?: string;
+  fileBuffer?: Express.Multer.File["buffer"];
 };
