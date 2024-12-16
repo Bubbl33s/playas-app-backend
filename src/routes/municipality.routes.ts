@@ -15,8 +15,11 @@ import {
 const router = Router();
 
 router.get("/", MunicipalityController.getMunicipalities);
+
 router.get("/:id", MunicipalityController.getMunicipalityById);
+
 router.get("/email/:email", MunicipalityController.getMunicipalityByEmail);
+
 router.post(
   "/",
   authenticateToken,
@@ -25,6 +28,7 @@ router.post(
   upload.single("file"),
   MunicipalityController.createMunicipality,
 );
+
 router.put(
   "/:id",
   authenticateToken,
@@ -33,6 +37,7 @@ router.put(
   upload.single("file"),
   MunicipalityController.updateMunicipality,
 );
+
 router.delete(
   "/:id",
   authenticateToken,

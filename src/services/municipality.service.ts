@@ -26,6 +26,7 @@ export class MunicipalityService {
       where: {
         email,
       },
+      include: { beaches: true },
     });
   }
 
