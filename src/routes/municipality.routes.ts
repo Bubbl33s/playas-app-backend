@@ -23,8 +23,8 @@ router.get("/email/:email", MunicipalityController.getMunicipalityByEmail);
 
 router.post(
   "/",
-  // authenticateToken,
-  // authorizeRoles(["admin"]),
+  authenticateToken,
+  authorizeRoles(["admin"]),
   upload.single("file"),
   parseMultipartFormData,
   validateData(createMunicipalityValidation),
@@ -35,8 +35,9 @@ router.put(
   "/:id",
   authenticateToken,
   authorizeRoles(["admin", "municipality"]),
-  validateData(updateMunicipalityValidation),
   upload.single("file"),
+  parseMultipartFormData,
+  validateData(updateMunicipalityValidation),
   MunicipalityController.updateMunicipality,
 );
 

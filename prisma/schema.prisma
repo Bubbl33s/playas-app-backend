@@ -18,6 +18,7 @@ model Municipality {
   province    String
   department  String
   beaches     Beach[]
+  role        String   @default("municipality")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

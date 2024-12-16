@@ -40,8 +40,8 @@ paths:
         - Municipalities
       summary: Crear municipalidad
       description: Crea una nueva municipalidad en la base de datos
-      # security:
-      #   - bearerAuth: []
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           multipart/form-data:
@@ -71,7 +71,7 @@ paths:
       description: Inicia sesión en la aplicación
       requestBody:
         content:
-          multipart/form-data:
+          application/json:
             schema:
               $ref: "#/components/requestBodies/municipalityLogin"
       responses:
@@ -80,7 +80,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/responses/userLogin"
+                $ref: "#/components/responses/municipalityLogin"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -509,11 +509,11 @@ components:
                 example: "Error interno del servidor"
 
     # AUTH
-    userLogin:
+    municipalityLogin:
       type: object
       properties:
-        user:
-          $ref: "#/components/schemas/user"
+        municipality:
+          $ref: "#/components/schemas/municipality"
         token:
           type: string
           example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZjIwZjQwZjIwZjIwZjIwZjIwZjIwZjIiLCJyb2xlIjoidXNlciIsImlhdCI6MTYzMDIwNjQwMCwiZXhwIjoxNjMwMjA2NDAwfQ.7"

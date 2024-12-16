@@ -87,12 +87,14 @@ export class MunicipalityController {
   ) {
     try {
       const { id } = req.params;
-      const fileBuffer = req.file?.buffer;
 
-      const municipality = await MunicipalityService.updateMunicipality(id, {
-        ...req.body,
-        fileBuffer,
-      });
+      const { file, ...municipalityData } = req.body;
+
+      const municipality = await MunicipalityService.updateMunicipality(
+        id,
+        municipalityData,
+        file?.buffer,
+      );
 
       res.json(municipality);
     } catch (error) {

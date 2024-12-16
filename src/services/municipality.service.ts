@@ -58,7 +58,11 @@ export class MunicipalityService {
     return newMunicipality;
   }
 
-  static async updateMunicipality(id: string, data: UpdateMunicipality) {
+  static async updateMunicipality(
+    id: string,
+    data: UpdateMunicipality,
+    fileBuffer?: Express.Multer.File["buffer"],
+  ) {
     const municipality = await prisma.municipality.findUnique({
       where: { id },
     });
@@ -74,11 +78,8 @@ export class MunicipalityService {
       data,
     });
 
-    if (data.fileBuffer) {
-      await this.uploadMunicipalityImage(
-        updatedMunicipality.id,
-        data.fileBuffer,
-      );
+    if (fileBuffer) {
+      await this.uploadMunicipalityImage(updatedMunicipality.id, fileBuffer);
     }
 
     return updatedMunicipality;

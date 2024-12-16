@@ -13,6 +13,7 @@ export default function setupExpress(app: Application) {
 
   app.use(cors(corsOptions));
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
   app.use(
     helmet({
