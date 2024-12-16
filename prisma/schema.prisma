@@ -12,23 +12,25 @@ model Municipality {
   email       String   @unique
   password    String   @db.VarChar(25)
   name        String   @db.VarChar(100)
-  description String?  @db.VarChar(255)
+  phrase      String?   @db.VarChar(50)
+  description String?
   image       String?
-  district    String
   province    String
   department  String
   beaches     Beach[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@index([district])
+  @@index([province])
+  @@index([department])
 }
 
 model Restriction {
   id          String   @id @default(cuid())
   name        String   @db.VarChar(100)
   description String?  @db.VarChar(255)
-  restrictions      BeachRestriction[]
+  beachId     String
+  beach       Beach    @relation(fields: [beachId], references: [id])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -44,31 +46,16 @@ model Beach {
   isHealthy         Boolean  @default(false)
   tideStatus        String   @db.VarChar(10)
   hasLifeguards     Boolean  @default(false)
-  lifeguardSchedule String?  @db.VarChar(20)
-  restrictions      BeachRestriction[]
-  photos            BeachPhoto[]
+  lifeguardSchedule String?  @db.VarChar(50)
+  hasRestrooms      Boolean  @default(false)
+  restroomSchedule  String?  @db.VarChar(50)
+  hasShowers        Boolean  @default(false)
+  showerSchedule    String?  @db.VarChar(50)
+  restrictions      Restriction[]
+  image             String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
   @@index([municipalityId])
   @@index([name])
-}
-
-model BeachRestriction {
-  id            String      @id @default(cuid())
-  beach         Beach       @relation(fields: [beachId], references: [id])
-  beachId       String
-  restriction   Restriction @relation(fields: [restrictionId], references: [id])
-  restrictionId String
-  notes         String?     @db.VarChar(255)
-  createdAt     DateTime    @default(now())
-}
-
-model BeachPhoto {
-  id         String @id @default(cuid())
-  beach      Beach  @relation(fields: [beachId], references: [id])
-  beachId    String
-  url        String
-  isPrimary  Boolean @default(false)
-  uploadedAt DateTime @default(now())
 }
