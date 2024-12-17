@@ -375,6 +375,48 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
+  /beaches/{id}/tideStatus:
+    patch:
+      tags:
+        - Beaches
+      summary: Actualizar estado de marea
+      description: Actualiza el estado de la marea de una playa por su ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID de la playa
+          schema:
+            type: string
+            format: cuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tideStatus:
+                  type: string
+                  example: "Alta"
+                  description: Estado de la marea
+      responses:
+        "200":
+          description: Estado de marea actualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/beach"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
   /beaches/{id}/activate:
     patch:
       tags:

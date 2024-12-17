@@ -85,6 +85,23 @@ export class BeachController {
     }
   }
 
+  static async updateTideStatus(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const beachId = req.params.id;
+      const { tideStatus } = req.body;
+
+      const beach = await BeachService.updateTideStatus(beachId, tideStatus);
+
+      res.json(beach);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async activateBeach(req: Request, res: Response, next: NextFunction) {
     try {
       const beachId = req.params.id;

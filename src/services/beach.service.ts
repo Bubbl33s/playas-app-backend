@@ -135,6 +135,20 @@ export class BeachService {
     });
   }
 
+  static async updateTideStatus(id: string, tideStatus: string) {
+    const beach = await prisma.beach.findUnique({ where: { id } });
+
+    if (!beach) {
+      throw new Error("No se encontró la playa");
+    }
+
+    return prisma.beach.update({
+      where: { id },
+      data: { tideStatus },
+      include: { restrictions: true },
+    });
+  }
+
   static async activateBeach(id: string) {
     const beach = await prisma.beach.findUnique({ where: { id } });
 

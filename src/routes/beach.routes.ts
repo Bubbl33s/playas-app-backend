@@ -12,11 +12,14 @@ import { createBeachValidation, updateBeachValidation } from "../validations";
 const router = Router();
 
 router.get("/", BeachController.getBeaches);
+
 router.get("/:id", BeachController.getBeach);
+
 router.get(
   "/municipality/:municipalityId",
   BeachController.getBeachesByMunicipality,
 );
+
 router.post(
   "/municipality/:municipalityId",
   authenticateToken,
@@ -27,6 +30,7 @@ router.post(
   parseMultipartFormData,
   BeachController.createBeach,
 );
+
 router.put(
   "/:id",
   authenticateToken,
@@ -35,6 +39,13 @@ router.put(
   parseMultipartFormData,
   validateData(updateBeachValidation),
   BeachController.updateBeach,
+);
+
+router.patch(
+  "/:id/tideStatus",
+  authenticateToken,
+  authorizeRoles(["admin", "municipality"]),
+  BeachController.updateTideStatus,
 );
 
 router.patch(

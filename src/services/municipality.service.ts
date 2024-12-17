@@ -9,7 +9,12 @@ import { extractPublicId } from "../utilities/extractPublicId";
 
 export class MunicipalityService {
   static async getMunicipalities() {
-    return prisma.municipality.findMany({ include: { beaches: true } });
+    return prisma.municipality.findMany({
+      where: {
+        role: "municipality",
+      },
+      include: { beaches: true },
+    });
   }
 
   static async getMunicipalityById(id: string) {
