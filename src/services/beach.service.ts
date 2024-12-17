@@ -37,6 +37,7 @@ export class BeachService {
           ...data,
           municipalityId,
         },
+        include: { restrictions: true },
       });
 
       if (restrictions?.length) {
@@ -62,7 +63,8 @@ export class BeachService {
     restrictions: Restriction[],
     fileBuffer?: Express.Multer.File["buffer"],
   ) {
-    return prisma.$transaction(async (tx) => {
+    // Realiza la transacción sin la carga de la imagen
+    const updatedBeach = await prisma.$transaction(async (tx) => {
       const beach = await tx.beach.findUnique({ where: { id } });
 
       if (!beach) {
@@ -72,6 +74,7 @@ export class BeachService {
       const updatedBeach = await tx.beach.update({
         where: { id },
         data,
+        include: { restrictions: true },
       });
 
       if (restrictions?.length) {
@@ -84,12 +87,14 @@ export class BeachService {
         });
       }
 
-      if (fileBuffer) {
-        return await this.uploadBeachImage(updatedBeach.id, fileBuffer);
-      }
-
       return updatedBeach;
     });
+
+    if (fileBuffer) {
+      return await this.uploadBeachImage(updatedBeach.id, fileBuffer);
+    }
+
+    return updatedBeach;
   }
 
   static async uploadBeachImage(id: string, fileBuffer: Buffer) {
@@ -126,6 +131,7 @@ export class BeachService {
       data: {
         image: result.secure_url,
       },
+      include: { restrictions: true },
     });
   }
 
@@ -139,6 +145,7 @@ export class BeachService {
     return prisma.beach.update({
       where: { id },
       data: { isActive: true },
+      include: { restrictions: true },
     });
   }
 
@@ -152,6 +159,7 @@ export class BeachService {
     return prisma.beach.update({
       where: { id },
       data: { isActive: false },
+      include: { restrictions: true },
     });
   }
 

@@ -223,35 +223,6 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"
 
-    post:
-      tags:
-        - Beaches
-      summary: Crear playa
-      description: Crea una nueva playa en la base de datos
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              $ref: "#/components/requestBodies/beach"
-      responses:
-        "201":
-          description: Playa creada
-          content:
-            multipart/form-data:
-              schema:
-                $ref: "#/components/schemas/beach"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "403":
-          $ref: "#/components/responses/Forbidden"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-
   /beaches/{id}:
     get:
       tags:
@@ -365,6 +336,42 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/beach"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+    post:
+      tags:
+        - Beaches
+      summary: Crear playa
+      description: Crea una nueva playa en la base de datos
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: municipalityId
+          in: path
+          required: true
+          description: ID de la municipalidad
+          schema:
+            type: string
+            format: cuid
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: "#/components/requestBodies/beach"
+      responses:
+        "201":
+          description: Playa creada
+          content:
+            multipart/form-data:
+              schema:
+                $ref: "#/components/schemas/beach"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "500":
           $ref: "#/components/responses/InternalServerError"
 

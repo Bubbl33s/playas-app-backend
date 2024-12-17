@@ -18,10 +18,10 @@ router.get(
   BeachController.getBeachesByMunicipality,
 );
 router.post(
-  "/",
+  "/municipality/:municipalityId",
   authenticateToken,
   authorizeRoles(["admin", "municipality"]),
-  upload.single("image"),
+  upload.single("file"),
   parseMultipartFormData,
   validateData(createBeachValidation),
   parseMultipartFormData,
@@ -31,7 +31,7 @@ router.put(
   "/:id",
   authenticateToken,
   authorizeRoles(["admin", "municipality"]),
-  upload.single("image"),
+  upload.single("file"),
   parseMultipartFormData,
   validateData(updateBeachValidation),
   BeachController.updateBeach,
