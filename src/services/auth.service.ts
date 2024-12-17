@@ -27,7 +27,7 @@ export class AuthService {
     }
 
     const token = jwt.sign(
-      { id: municipality.id, role: "municipality" },
+      { id: municipality.id, role: municipality.role },
       this.secretKey,
       {
         expiresIn: "2h",

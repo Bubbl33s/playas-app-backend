@@ -65,8 +65,10 @@ export class MunicipalityController {
     next: NextFunction,
   ) {
     try {
+      const { file, ...municipalityData } = req.body;
+
       const municipality = await MunicipalityService.createMunicipality(
-        req.body,
+        municipalityData,
         req.file?.buffer,
       );
 
@@ -83,10 +85,11 @@ export class MunicipalityController {
   ) {
     try {
       const { id } = req.params;
+      const { file, ...municipalityData } = req.body;
 
       const municipality = await MunicipalityService.updateMunicipality(
         id,
-        req.body,
+        municipalityData,
         req.file?.buffer,
       );
 

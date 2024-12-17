@@ -21,6 +21,14 @@ export const updateMunicipalityValidation = z.object({
     })
     .max(50, "La frase debe tener como máximo 255 caracteres")
     .optional(),
+
+  province: z.string({
+    invalid_type_error: "La provincia debe ser de tipo string",
+  }),
+
+  department: z.string({
+    invalid_type_error: "El departamento debe ser de tipo string",
+  }),
 });
 
 export const createMunicipalityValidation = z.object({
