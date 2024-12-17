@@ -29,11 +29,4 @@ router.put(
   RestrictionController.updateRestriction,
 );
 
-router.delete(
-  "/:id",
-  authenticateToken,
-  authorizeRoles(["admin"]),
-  RestrictionController.deleteRestriction,
-);
-
 export default router;

@@ -37,7 +37,11 @@ export class RestrictionController {
     next: NextFunction,
   ) {
     try {
-      const restriction = await RestrictionService.createRestriction(req.body);
+      const { beachId } = req.params;
+      const restriction = await RestrictionService.createRestriction(
+        beachId,
+        req.body,
+      );
 
       res.json(restriction);
     } catch (error) {
@@ -58,21 +62,6 @@ export class RestrictionController {
       );
 
       res.json(restriction);
-    } catch (error) {
-      next();
-    }
-  }
-
-  static async deleteRestriction(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const { id } = req.params;
-      await RestrictionService.deleteRestriction(id);
-
-      res.status(204).send();
     } catch (error) {
       next();
     }

@@ -6,7 +6,6 @@ import {
 import {
   createBeachValidation,
   updateBeachValidation,
-  updateBeachRestrictionsValidation,
 } from "./beach.validation";
 
 export {
@@ -15,5 +14,4 @@ export {
   updateMunicipalityValidation,
   createBeachValidation,
   updateBeachValidation,
-  updateBeachRestrictionsValidation,
 };
