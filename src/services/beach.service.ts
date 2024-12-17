@@ -29,6 +29,7 @@ export class BeachService {
     municipalityId: string,
     data: Beach,
     restrictions: Restriction[],
+    fileBuffer?: Express.Multer.File["buffer"],
   ) {
     return prisma.$transaction(async (tx) => {
       const newBeach = await tx.beach.create({
@@ -36,6 +37,7 @@ export class BeachService {
           ...data,
           municipalityId,
         },
+        include: { restrictions: true },
       });
 
       if (restrictions?.length) {
@@ -47,8 +49,8 @@ export class BeachService {
         });
       }
 
-      if (data.fileBuffer) {
-        await this.uploadBeachImage(newBeach.id, data.fileBuffer);
+      if (fileBuffer) {
+        return await this.uploadBeachImage(newBeach.id, fileBuffer);
       }
 
       return newBeach;
@@ -59,8 +61,10 @@ export class BeachService {
     id: string,
     data: Beach,
     restrictions: Restriction[],
+    fileBuffer?: Express.Multer.File["buffer"],
   ) {
-    return prisma.$transaction(async (tx) => {
+    // Realiza la transacción sin la carga de la imagen
+    const updatedBeach = await prisma.$transaction(async (tx) => {
       const beach = await tx.beach.findUnique({ where: { id } });
 
       if (!beach) {
@@ -70,6 +74,7 @@ export class BeachService {
       const updatedBeach = await tx.beach.update({
         where: { id },
         data,
+        include: { restrictions: true },
       });
 
       if (restrictions?.length) {
@@ -82,12 +87,14 @@ export class BeachService {
         });
       }
 
-      if (data.fileBuffer) {
-        await this.uploadBeachImage(updatedBeach.id, data.fileBuffer);
-      }
-
       return updatedBeach;
     });
+
+    if (fileBuffer) {
+      return await this.uploadBeachImage(updatedBeach.id, fileBuffer);
+    }
+
+    return updatedBeach;
   }
 
   static async uploadBeachImage(id: string, fileBuffer: Buffer) {
@@ -124,6 +131,21 @@ export class BeachService {
       data: {
         image: result.secure_url,
       },
+      include: { restrictions: true },
+    });
+  }
+
+  static async updateTideStatus(id: string, tideStatus: string) {
+    const beach = await prisma.beach.findUnique({ where: { id } });
+
+    if (!beach) {
+      throw new Error("No se encontró la playa");
+    }
+
+    return prisma.beach.update({
+      where: { id },
+      data: { tideStatus },
+      include: { restrictions: true },
     });
   }
 
@@ -137,6 +159,7 @@ export class BeachService {
     return prisma.beach.update({
       where: { id },
       data: { isActive: true },
+      include: { restrictions: true },
     });
   }
 
@@ -150,6 +173,7 @@ export class BeachService {
     return prisma.beach.update({
       where: { id },
       data: { isActive: false },
+      include: { restrictions: true },
     });
   }
 

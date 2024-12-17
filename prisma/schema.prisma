@@ -10,7 +10,7 @@ datasource db {
 model Municipality {
   id          String   @id @default(cuid())
   email       String   @unique
-  password    String   @db.VarChar(25)
+  password    String
   name        String   @db.VarChar(100)
   phrase      String?   @db.VarChar(50)
   description String?
@@ -18,6 +18,7 @@ model Municipality {
   province    String
   department  String
   beaches     Beach[]
+  role        String   @default("municipality")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

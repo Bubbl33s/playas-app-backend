@@ -9,6 +9,7 @@ export class AuthController {
   ) {
     try {
       const { email, password } = req.body;
+      console.log(req.body);
       const { token, municipality } = await AuthService.municipalityLogin(
         email,
         password,

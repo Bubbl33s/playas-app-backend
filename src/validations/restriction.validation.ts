@@ -1,13 +1,6 @@
 import { z } from "zod";
 
 export const restrictionValidation = z.object({
-  beachId: z
-    .string({
-      required_error: "El id de la playa es requerido",
-      invalid_type_error: "El id de la playa debe ser de tipo string",
-    })
-    .cuid("El id de la playa debe ser un CUID válido"),
-
   name: z
     .string({
       required_error: "El nombre es requerido",

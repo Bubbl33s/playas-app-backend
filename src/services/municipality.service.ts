@@ -9,7 +9,12 @@ import { extractPublicId } from "../utilities/extractPublicId";
 
 export class MunicipalityService {
   static async getMunicipalities() {
-    return prisma.municipality.findMany({ include: { beaches: true } });
+    return prisma.municipality.findMany({
+      where: {
+        role: "municipality",
+      },
+      include: { beaches: true },
+    });
   }
 
   static async getMunicipalityById(id: string) {
@@ -30,7 +35,10 @@ export class MunicipalityService {
     });
   }
 
-  static async createMunicipality(data: CreateMunicipality) {
+  static async createMunicipality(
+    data: CreateMunicipality,
+    fileBuffer?: Express.Multer.File["buffer"],
+  ) {
     const municipalityWithSameEmail = await this.getMunicipalityByEmail(
       data.email,
     );
@@ -48,14 +56,18 @@ export class MunicipalityService {
       },
     });
 
-    if (data.fileBuffer) {
-      await this.uploadMunicipalityImage(newMunicipality.id, data.fileBuffer);
+    if (fileBuffer) {
+      return await this.uploadMunicipalityImage(newMunicipality.id, fileBuffer);
     }
 
     return newMunicipality;
   }
 
-  static async updateMunicipality(id: string, data: UpdateMunicipality) {
+  static async updateMunicipality(
+    id: string,
+    data: UpdateMunicipality,
+    fileBuffer?: Express.Multer.File["buffer"],
+  ) {
     const municipality = await prisma.municipality.findUnique({
       where: { id },
     });
@@ -71,10 +83,10 @@ export class MunicipalityService {
       data,
     });
 
-    if (data.fileBuffer) {
-      await this.uploadMunicipalityImage(
+    if (fileBuffer) {
+      return await this.uploadMunicipalityImage(
         updatedMunicipality.id,
-        data.fileBuffer,
+        fileBuffer,
       );
     }
 

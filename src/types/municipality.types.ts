@@ -4,7 +4,6 @@ export type UpdateMunicipality = {
   phrase?: string;
   province?: string;
   department?: string;
-  fileBuffer?: Express.Multer.File["buffer"];
 };
 
 export type CreateMunicipality = {
@@ -15,5 +14,4 @@ export type CreateMunicipality = {
   phrase?: string;
   province: string;
   department: string;
-  fileBuffer?: Express.Multer.File["buffer"];
 };

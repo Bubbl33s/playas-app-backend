@@ -5,32 +5,47 @@ import {
   authorizeRoles,
   validateData,
   upload,
+  parseMultipartFormData,
 } from "../middlewares";
 import { createBeachValidation, updateBeachValidation } from "../validations";
 
 const router = Router();
 
 router.get("/", BeachController.getBeaches);
+
 router.get("/:id", BeachController.getBeach);
+
 router.get(
   "/municipality/:municipalityId",
   BeachController.getBeachesByMunicipality,
 );
+
 router.post(
-  "/",
+  "/municipality/:municipalityId",
   authenticateToken,
   authorizeRoles(["admin", "municipality"]),
+  upload.single("file"),
+  parseMultipartFormData,
   validateData(createBeachValidation),
-  upload.single("image"),
+  parseMultipartFormData,
   BeachController.createBeach,
 );
+
 router.put(
   "/:id",
   authenticateToken,
   authorizeRoles(["admin", "municipality"]),
+  upload.single("file"),
+  parseMultipartFormData,
   validateData(updateBeachValidation),
-  upload.single("image"),
   BeachController.updateBeach,
+);
+
+router.patch(
+  "/:id/tideStatus",
+  authenticateToken,
+  authorizeRoles(["admin", "municipality"]),
+  BeachController.updateTideStatus,
 );
 
 router.patch(

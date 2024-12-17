@@ -11,5 +11,4 @@ export type Beach = {
   restroomSchedule?: string;
   hasShowers: boolean;
   showerSchedule?: string;
-  fileBuffer?: Express.Multer.File["buffer"];
 };

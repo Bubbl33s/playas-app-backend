@@ -52,10 +52,13 @@ export class BeachController {
 
   static async createBeach(req: Request, res: Response, next: NextFunction) {
     try {
+      const { file, restrictions, ...beachData } = req.body;
+
       const beach = await BeachService.createBeach(
         req.params.municipalityId,
-        req.body,
-        req.body.restrictions,
+        beachData,
+        restrictions,
+        req.file?.buffer,
       );
 
       res.json(beach);
@@ -67,13 +70,33 @@ export class BeachController {
   static async updateBeach(req: Request, res: Response, next: NextFunction) {
     try {
       const beachId = req.params.id;
+      const { file, restrictions, ...beachData } = req.body;
+
       const updatedBeach = await BeachService.updateBeach(
         beachId,
-        req.body,
-        req.body.restrictions,
+        beachData,
+        restrictions,
+        req.file?.buffer,
       );
 
       res.json(updatedBeach);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async updateTideStatus(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const beachId = req.params.id;
+      const { tideStatus } = req.body;
+
+      const beach = await BeachService.updateTideStatus(beachId, tideStatus);
+
+      res.json(beach);
     } catch (error) {
       next(error);
     }
