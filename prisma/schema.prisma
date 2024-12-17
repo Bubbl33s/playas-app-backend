@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Municipality {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  name        String   @db.VarChar(100)
+  phrase      String?   @db.VarChar(50)
+  description String?
+  image       String?
+  province    String
+  department  String
+  beaches     Beach[]
+  role        String   @default("municipality")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([province])
+  @@index([department])
+}
+
+model Restriction {
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(100)
+  description String?  @db.VarChar(255)
+  beachId     String
+  beach       Beach    @relation(fields: [beachId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Beach {
+  id                String   @id @default(cuid())
+  municipality      Municipality   @relation(fields: [municipalityId], references: [id])
+  municipalityId    String
+  name              String   @db.VarChar(100)
+  description       String   @db.VarChar(255)
+  latitude          Float
+  longitude         Float
+  isHealthy         Boolean  @default(false)
+  tideStatus        String   @db.VarChar(10)
+  hasLifeguards     Boolean  @default(false)
+  lifeguardSchedule String?  @db.VarChar(50)
+  hasRestrooms      Boolean  @default(false)
+  restroomSchedule  String?  @db.VarChar(50)
+  hasShowers        Boolean  @default(false)
+  showerSchedule    String?  @db.VarChar(50)
+  restrictions      Restriction[]
+  image             String?
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([municipalityId])
+  @@index([name])
+}
