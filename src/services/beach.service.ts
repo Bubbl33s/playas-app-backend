@@ -31,30 +31,28 @@ export class BeachService {
     restrictions: Restriction[],
     fileBuffer?: Express.Multer.File["buffer"],
   ) {
-    return prisma.$transaction(async (tx) => {
-      const newBeach = await tx.beach.create({
-        data: {
-          ...data,
-          municipalityId,
-        },
-        include: { restrictions: true },
-      });
-
-      if (restrictions?.length) {
-        await tx.restriction.createMany({
-          data: restrictions.map((restriction) => ({
-            ...restriction,
-            beachId: newBeach.id,
-          })),
-        });
-      }
-
-      if (fileBuffer) {
-        return await this.uploadBeachImage(newBeach.id, fileBuffer);
-      }
-
-      return newBeach;
+    const newBeach = await prisma.beach.create({
+      data: {
+        ...data,
+        municipalityId,
+      },
+      include: { restrictions: true },
     });
+
+    if (restrictions?.length) {
+      await prisma.restriction.createMany({
+        data: restrictions.map((restriction) => ({
+          ...restriction,
+          beachId: newBeach.id,
+        })),
+      });
+    }
+
+    if (fileBuffer) {
+      return await this.uploadBeachImage(newBeach.id, fileBuffer);
+    }
+
+    return newBeach;
   }
 
   static async updateBeach(
@@ -103,7 +101,7 @@ export class BeachService {
     });
 
     if (!beach) {
-      throw new Error("No se encontró la playa");
+      throw new Error("No se encontró la playa para la imagen");
     }
 
     if (beach.image) {
