@@ -20,6 +20,29 @@ export class MunicipalityController {
     }
   }
 
+  static async getMunicipalitiesByFilters(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { department, province } = req.query;
+    try {
+      const municipalities =
+        await MunicipalityService.getMunicipalitiesByFilters(
+          String(department),
+          String(province),
+        );
+
+      if (!municipalities) {
+        throw new Error("No se encontraron municipalidades");
+      }
+
+      res.json(municipalities);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async getMunicipalityById(
     req: Request,
     res: Response,
