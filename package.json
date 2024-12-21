@@ -7,7 +7,7 @@
     "start": "npm run build && node dist/index.js",
     "build": "tsc && npm run copy-docs",
     "copy-docs": "cp -r src/docs dist/docs",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'tsx' src/index.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec tsx src/index.ts",
     "lint": "eslint 'src/**/*.ts'",
     "lint:fix": "eslint --fix",
     "prettier": "prettier --write --ignore-unknown .",

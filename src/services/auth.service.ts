@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 import { comparePassword } from "../utilities/hashPassword";
 import { MunicipalityService } from "./municipality.service";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export class AuthService {
   static secretKey = process.env.JWT_SECRET_KEY as string;
