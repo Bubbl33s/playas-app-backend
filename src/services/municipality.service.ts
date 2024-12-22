@@ -17,6 +17,41 @@ export class MunicipalityService {
     });
   }
 
+  static async getMunicipalitiesByFilters(
+    department: string | undefined,
+    province: string | undefined,
+  ) {
+    const mulDep = department?.split(",");
+    const mulProv = province?.split(",");
+
+    const whereClauseDep: any = [];
+    const whereClauseProv: any = [];
+
+    if (department !== "undefined") {
+      mulDep?.forEach((element) => {
+        whereClauseDep.push({ department: element });
+      });
+    }
+
+    if (province !== "undefined") {
+      mulProv?.forEach((element) => {
+        whereClauseProv.push({ province: element });
+      });
+    }
+
+    if (whereClauseDep == undefined && whereClauseProv == undefined) {
+      console.log("no hay query params");
+      return [];
+    } else {
+      return await prisma.municipality.findMany({
+        where: {
+          role: "municipality",
+          AND: [{ OR: whereClauseDep }, { OR: whereClauseProv }],
+        },
+      });
+    }
+  }
+
   static async getMunicipalityById(id: string) {
     return prisma.municipality.findUnique({
       where: {

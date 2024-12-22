@@ -17,6 +17,11 @@ const router = Router();
 
 router.get("/", MunicipalityController.getMunicipalities);
 
+router.get(
+  "/filters/filter",
+  MunicipalityController.getMunicipalitiesByFilters,
+);
+
 router.get("/:id", MunicipalityController.getMunicipalityById);
 
 router.get("/email/:email", MunicipalityController.getMunicipalityByEmail);
