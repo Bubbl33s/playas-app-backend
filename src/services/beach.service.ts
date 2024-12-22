@@ -11,6 +11,63 @@ export class BeachService {
     });
   }
 
+  static async getBeachesByFilters(
+    isHealthy: string | undefined,
+    hasLifeguards: string | undefined,
+    tideStatus: string | undefined,
+  ) {
+    const mulHealth = isHealthy?.split(",");
+    const mulLife = hasLifeguards?.split(",");
+    const mulTide = tideStatus?.split(",");
+
+    const whereClauseHealth: any = [];
+    const whereClauseLife: any = [];
+    const whereClauseTide: any = [];
+
+    if (isHealthy !== "undefined") {
+      mulHealth?.forEach((element) => {
+        whereClauseHealth.push({
+          isHealthy: element === "si" ? true : false,
+        });
+      });
+    }
+
+    if (hasLifeguards !== "undefined") {
+      mulLife?.forEach((element) => {
+        whereClauseLife.push({
+          hasLifeguards: element === "si" ? true : false,
+        });
+      });
+    }
+
+    if (tideStatus !== "undefined") {
+      mulTide?.forEach((element) => {
+        whereClauseTide.push({
+          tideStatus: element,
+        });
+      });
+    }
+
+    if (
+      whereClauseHealth == undefined &&
+      whereClauseLife == undefined &&
+      whereClauseTide == undefined
+    ) {
+      console.log("no hay query params");
+      return [];
+    } else {
+      return await prisma.beach.findMany({
+        where: {
+          AND: [
+            { OR: whereClauseHealth },
+            { OR: whereClauseLife },
+            { OR: whereClauseTide },
+          ],
+        },
+      });
+    }
+  }
+
   static async getBeach(id: string) {
     return prisma.beach.findUnique({
       where: { id },
