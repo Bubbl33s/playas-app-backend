@@ -16,6 +16,29 @@ export class BeachController {
     }
   }
 
+  static async getBeachesByFilters(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    const { isHealthy, hasLifeguards, tideStatus } = req.query;
+    try {
+      const beaches = await BeachService.getBeachesByFilters(
+        String(isHealthy),
+        String(hasLifeguards),
+        String(tideStatus),
+      );
+
+      if (!beaches) {
+        throw new Error("No se encontraron playas");
+      }
+
+      res.json(beaches);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async getBeach(req: Request, res: Response, next: NextFunction) {
     try {
       const beach = await BeachService.getBeach(req.params.id);

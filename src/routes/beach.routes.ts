@@ -13,6 +13,8 @@ const router = Router();
 
 router.get("/", BeachController.getBeaches);
 
+router.get("/filters/filter", BeachController.getBeachesByFilters);
+
 router.get("/:id", BeachController.getBeach);
 
 router.get(
